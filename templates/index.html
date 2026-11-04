@@ -1,0 +1,284 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Anthony Nze - Aspiring DevOps Engineer focused on Linux, cloud infrastructure, automation and CI/CD.">
+    <title>Anthony Nze | DevOps Engineer</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body>
+
+    <header class="navbar">
+        <a href="#home" class="logo">AN<span>.</span></a>
+
+        <nav>
+            <a href="#home">Home</a>
+            <a href="#about">About</a>
+            <a href="#skills">Skills</a>
+            <a href="#projects">Projects</a>
+            <a href="#contact">Contact</a>
+        </nav>
+
+        <a href="#contact" class="nav-button">Let's Connect ↗</a>
+    </header>
+
+    <main>
+        <section class="hero" id="home">
+            <div class="hero-content">
+                <p class="eyebrow">
+                    <span class="status-dot"></span>
+                    OPEN TO LEARNING & OPPORTUNITIES
+                </p>
+
+                <h1>Building the bridge between <span>development</span> and <span>operations.</span></h1>
+
+                <p class="hero-description">
+                    I'm Anthony Nze, an aspiring DevOps Engineer passionate about
+                    cloud infrastructure, automation, Linux systems and building
+                    reliable technology solutions.
+                </p>
+
+                <div class="hero-buttons">
+                    <a href="#projects" class="button primary-button">Explore My Work ↗</a>
+                    <a href="#about" class="button secondary-button">More About Me</a>
+                </div>
+
+                <div class="hero-note">
+                    <span>01</span>
+                    LEARN · BUILD · AUTOMATE · IMPROVE
+                </div>
+            </div>
+
+            <div class="hero-visual">
+<img
+    src="{{ url_for('static', filename='images/profile.png') }}"
+    alt="Professional portrait of Anthony Nze"
+    class="profile-photo"
+>
+                <div class="floating-label">
+                    <span class="status-dot"></span>
+                    Always building something
+                </div>
+            </div>
+        </section>
+
+        <section class="quick-stats">
+            <div>
+                <h3>Linux</h3>
+                <p>System Administration</p>
+            </div>
+            <div>
+                <h3>AWS</h3>
+                <p>Cloud Infrastructure</p>
+            </div>
+            <div>
+                <h3>Automation</h3>
+                <p>Repeatable Workflows</p>
+            </div>
+            <div>
+                <h3>CI/CD</h3>
+                <p>Delivery Pipelines</p>
+            </div>
+        </section>
+
+        <section class="section about-section" id="about">
+            <div class="section-heading">
+                <p class="section-label">01 / ABOUT ME</p>
+                <h2>Curious mind. <span>Practical builder.</span></h2>
+            </div>
+
+            <div class="about-content">
+                <div>
+                    <p>
+                        I'm an aspiring DevOps Engineer currently developing my
+                        skills through hands-on training, practical assignments
+                        and personal projects.
+                    </p>
+
+                    <p>
+                        My learning journey focuses on understanding how
+                        applications are built, deployed, automated and
+                        maintained. I enjoy working with Linux, exploring cloud
+                        technologies and solving problems through practical work.
+                    </p>
+
+                    <p>
+                        I'm currently strengthening my foundation in cloud
+                        computing, containerization, configuration management
+                        and continuous integration and delivery.
+                    </p>
+                </div>
+
+                <div class="about-card">
+                    <p class="card-label">CURRENT JOURNEY</p>
+                    <h3>DevOps Training</h3>
+                    <p>Livingworth Academy</p>
+                    <div class="about-divider"></div>
+                    <p class="card-label">MY APPROACH</p>
+                    <h3>Learn by doing.</h3>
+                    <p>Build projects, practise consistently and keep improving.</p>
+                </div>
+            </div>
+        </section>
+
+        <section class="section skills-section" id="skills">
+            <div class="section-heading">
+                <p class="section-label">02 / TECHNICAL SKILLS</p>
+                <h2>Tools I'm <span>learning and using.</span></h2>
+                <p class="section-intro">
+                    Technologies I'm developing practical experience with
+                    throughout my DevOps journey.
+                </p>
+            </div>
+
+            <div class="skills-grid">
+                <article class="skill-card">
+                    <span class="skill-number">01</span>
+                    <h3>Linux & Scripting</h3>
+                    <p>Ubuntu, Linux commands, Bash scripting and system administration.</p>
+                </article>
+
+                <article class="skill-card">
+                    <span class="skill-number">02</span>
+                    <h3>Version Control</h3>
+                    <p>Git, GitHub, repositories, branching and collaboration.</p>
+                </article>
+
+                <article class="skill-card">
+                    <span class="skill-number">03</span>
+                    <h3>Cloud Computing</h3>
+                    <p>AWS, EC2, IAM, VPC, S3 and cloud infrastructure fundamentals.</p>
+                </article>
+
+                <article class="skill-card">
+                    <span class="skill-number">04</span>
+                    <h3>Containers</h3>
+                    <p>Docker fundamentals, images, containers and application deployment.</p>
+                </article>
+
+                <article class="skill-card">
+                    <span class="skill-number">05</span>
+                    <h3>Automation</h3>
+                    <p>Ansible, Terraform and infrastructure automation fundamentals.</p>
+                </article>
+
+                <article class="skill-card">
+                    <span class="skill-number">06</span>
+                    <h3>CI/CD & Monitoring</h3>
+                    <p>Jenkins, GitHub Actions, monitoring and delivery pipeline concepts.</p>
+                </article>
+            </div>
+        </section>
+
+        <section class="section projects-section" id="projects">
+            <div class="section-heading">
+                <p class="section-label">03 / SELECTED PROJECTS</p>
+                <h2>Learning through <span>real projects.</span></h2>
+                <p class="section-intro">
+                    Practical work that helps me turn concepts into experience.
+                </p>
+            </div>
+
+            <div class="projects-grid">
+                <article class="project-card">
+                    <div class="project-top">
+                        <span class="project-tag">BASH · LINUX</span>
+                        <span class="project-index">PROJECT 01</span>
+                    </div>
+                    <h3>Node Health Monitoring</h3>
+                    <p>
+                        A Bash-based monitoring tool that checks system resources,
+                        running processes, services and network connectivity.
+                    </p>
+                    <div class="project-tech">
+                        <span>Linux</span><span>Bash</span><span>Shell</span>
+                    </div>
+                    <a href="https://github.com/anthonynzedevops-sketch/devops-node-health-monitoring"
+                       target="_blank" rel="noopener noreferrer">View Project ↗</a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-top">
+                        <span class="project-tag">WEB · DEVOPS LEARNING</span>
+                        <span class="project-index">PROJECT 02</span>
+                    </div>
+                    <h3>DevOps Level Up</h3>
+                    <p>
+                        A gamified learning platform designed to help beginners
+                        practise DevOps concepts through interactive missions
+                        and simulated technical challenges.
+                    </p>
+                    <div class="project-tech">
+                        <span>HTML</span><span>CSS</span><span>JavaScript</span>
+                    </div>
+                    <a href="https://anthonynzedevops-sketch.github.io/devops-level-up/"
+                       target="_blank" rel="noopener noreferrer">Visit Project ↗</a>
+                </article>
+
+                <article class="project-card">
+                    <div class="project-top">
+                        <span class="project-tag">CLOUD · AWS</span>
+                        <span class="project-index">PROJECT 03</span>
+                    </div>
+                    <h3>Cloud & Automation Labs</h3>
+                    <p>
+                        Hands-on practice exploring AWS EC2, Linux server access,
+                        SSH and Ansible configuration management.
+                    </p>
+                    <div class="project-tech">
+                        <span>AWS</span><span>EC2</span><span>Ansible</span>
+                    </div>
+                    <a href="https://github.com/anthonynzedevops-sketch"
+                       target="_blank" rel="noopener noreferrer">Explore GitHub ↗</a>
+                </article>
+            </div>
+        </section>
+
+        <section class="journey-section">
+            <div class="journey-content">
+                <p class="section-label">04 / THE MINDSET</p>
+                <h2>Technology keeps evolving.<br><span>So do I.</span></h2>
+                <p>
+                    Every project is an opportunity to learn something new,
+                    solve a problem and become better at building reliable systems.
+                </p>
+                <a href="#contact" class="button primary-button">Get In Touch ↗</a>
+            </div>
+        </section>
+
+        <section class="section contact-section" id="contact">
+            <div class="section-heading">
+                <p class="section-label">05 / CONTACT</p>
+                <h2>Let's connect and <span>build something.</span></h2>
+                <p class="section-intro">
+                    I'm open to connecting with technology professionals,
+                    fellow learners and people working on interesting projects.
+                </p>
+            </div>
+
+            <div class="contact-links">
+                <a href="mailto:anthonynze.devops@gmail.com">
+                    <span>Email</span>
+                    <strong>anthonynze.devops@gmail.com ↗</strong>
+                </a>
+
+                <a href="https://github.com/anthonynzedevops-sketch"
+                   target="_blank" rel="noopener noreferrer">
+                    <span>GitHub</span>
+                    <strong>Explore my repositories ↗</strong>
+                </a>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <a href="#home" class="logo">AN<span>.</span></a>
+        <p>© 2026 Anthony Nze. Built with curiosity and a DevOps mindset.</p>
+        <a href="#home">Back to top ↑</a>
+    </footer>
+
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+</body>
+</html>

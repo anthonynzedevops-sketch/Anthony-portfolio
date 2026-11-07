@@ -1,93 +1,106 @@
 # Anthony Nze - DevOps Portfolio
 
-A personal portfolio website showcasing my DevOps learning journey, technical skills, projects and CV.
+A responsive personal portfolio website showcasing my DevOps learning journey, technical skills, projects and CV.
 
 ## Technologies
 
 - HTML5, CSS3 and JavaScript
-- Docker
 - Nginx
+- Docker
 - AWS EC2
+- AWS Systems Manager (SSM)
 - Git and GitHub
+- GitHub Actions
+- AWS IAM and GitHub OIDC
 
 ## Project Structure
 
-```text
-anthony-portfolio/
-├── Dockerfile
-├── README.md
-├── static/
-│   ├── css/
-│   ├── files/
-│   ├── images/
-│   └── js/
-└── templates/
-    └── index.html
-```
+- `templates/` - Portfolio HTML
+- `static/css/` - Website styling
+- `static/js/` - Website JavaScript
+- `static/images/` - Website images
+- `static/files/` - Downloadable CV
+- `.github/workflows/deploy.yml` - CI/CD pipeline
+- `Dockerfile` - Nginx container configuration
 
 ## Build and Run Locally
 
 Build the Docker image:
 
-```bash
-docker build -t anthony-portfolio:v1 .
-```
+    docker build -t anthony-portfolio:v1 .
 
 Run the container:
 
-```bash
-docker run -d --name anthony-portfolio -p 8081:80 --restart unless-stopped anthony-portfolio:v1
-```
+    docker run -d --name anthony-portfolio -p 8081:80 --restart unless-stopped anthony-portfolio:v1
 
-Visit http://localhost:8081
+Open:
 
-Check running containers:
+    http://localhost:8081
 
-```bash
-docker ps
-```
+Check containers:
 
-View container logs:
+    docker ps
 
-```bash
-docker logs anthony-portfolio
-```
+View logs:
+
+    docker logs anthony-portfolio
 
 ## AWS EC2 Deployment
 
-The portfolio runs in a Docker container on an Ubuntu EC2 instance.
+The portfolio is hosted on an Ubuntu EC2 instance using Docker and Nginx.
 
 - Web server: Nginx
 - Container port: 80
 - EC2 host port: 8081
 - Public URL: http://13.62.50.97:8081
 
-The existing DevOps Level Up website runs separately and must not be stopped or replaced during portfolio deployments.
+The existing DevOps Level Up website runs separately on port 80.
 
-## Security Group
+## CI/CD Pipeline
 
-| Type | Port | Source |
-|---|---:|---|
-| SSH | 22 | Administrator's IP |
-| HTTP | 80 | 0.0.0.0/0 |
-| Custom TCP | 8081 | 0.0.0.0/0 |
+GitHub Actions automatically runs when code is pushed to the main branch. Manual workflow execution is also supported.
 
-## Rollback
+The pipeline:
 
-Execute these commands on the EC2 server, not your local computer. The previous image is tagged `anthony-portfolio:v1`.
+1. Checks out the repository.
+2. Validates required portfolio files.
+3. Builds the Docker image.
+4. Authenticates to AWS using GitHub OIDC.
+5. Sends deployment commands through AWS Systems Manager.
+6. Deploys the requested Git commit to EC2.
+7. Checks deployment status and public HTTP availability.
 
-```bash
-sudo docker stop anthony-portfolio
-sudo docker rm anthony-portfolio
-sudo docker run -d --name anthony-portfolio -p 8081:80 --restart unless-stopped anthony-portfolio:v1
-```
+The EC2 deployment script validates the commit, builds a versioned Docker image, replaces the portfolio container and performs a health check.
+
+## Deployment and Rollback
+
+The deployment script automatically attempts to restore the previous container image if a deployment fails during container replacement or health checking.
+
+For a manual rollback, connect to EC2 and redeploy a previous commit that is still part of the main branch history:
+
+    sudo /usr/local/sbin/deploy-portfolio-from-git 612ceed9b36601dcb162ef36ef666847c693d0a8
+
+Check the running container:
+
+    sudo docker ps
+
+## Security
+
+- GitHub Actions uses OIDC rather than long-lived AWS access keys.
+- AWS deployment commands are sent through Systems Manager.
+- SSH administrative access is restricted to the administrator's IP.
+- The portfolio is served over the configured public web port.
+
+## Links
+
+- Live portfolio: http://13.62.50.97:8081
+- GitHub repository: https://github.com/anthonynzedevops-sketch/Anthony-portfolio
+- GitHub profile: https://github.com/anthonynzedevops-sketch
+- LinkedIn: https://www.linkedin.com/in/anthony-nze-210847446/
+- Email: anthonynze.devops@gmail.com
 
 ## Author
 
-**Anthony Nze**
+Anthony Nze
 
 Aspiring DevOps Engineer
-
-- GitHub: https://github.com/anthonynzedevops-sketch
-- LinkedIn: https://www.linkedin.com/in/anthony-nze-210847446/
-- Email: anthonynze.devops@gmail.com

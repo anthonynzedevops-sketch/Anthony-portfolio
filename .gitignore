@@ -17,3 +17,15 @@ __pycache__/
 # Operating system files
 .DS_Store
 Thumbs.db
+
+# Local backups and Docker archives
+*.backup
+*.before-nginx
+*.before-cv
+*.tar
+
+# Local backups and Docker archives
+*.backup
+*.before-nginx
+*.before-cv
+*.tar

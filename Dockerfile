@@ -1,21 +1,14 @@
+# Use the lightweight official Nginx image
+FROM nginx:alpine
 
-# Use Python as the base image
-FROM python:3.12-slim
+# Copy the portfolio HTML into Nginx's web directory
+COPY templates/index.html /usr/share/nginx/html/index.html
 
-# Set the working directory
-WORKDIR /app
+# Copy CSS, JavaScript, images and CV files
+COPY static/ /usr/share/nginx/html/static/
 
-# Copy requirements
-COPY requirements.txt .
+# Nginx serves the website on port 80
+EXPOSE 80
 
-# Install Python dependencies
-RUN pip install --no-cache-dir -r requirements.txt
-
-# Copy the application files
-COPY . .
-
-# Expose Flask port
-EXPOSE 5000
-
-# Start the Flask application
-CMD ["python", "app.py"]
+# Keep Nginx running in the foreground
+CMD ["nginx", "-g", "daemon off;"]

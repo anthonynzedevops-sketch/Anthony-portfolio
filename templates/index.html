@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Anthony Nze - Aspiring DevOps Engineer focused on Linux, cloud infrastructure, automation and CI/CD.">
     <title>Anthony Nze | DevOps Engineer</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="/static/css/style.css">
 </head>
 <body>
 
@@ -18,6 +18,7 @@
             <a href="#about">About</a>
             <a href="#skills">Skills</a>
             <a href="#projects">Projects</a>
+            <a href="#cv">CV</a>
             <a href="#contact">Contact</a>
         </nav>
 
@@ -53,7 +54,7 @@
 
             <div class="hero-visual">
 <img
-    src="{{ url_for('static', filename='images/profile.png') }}"
+    src="/static/images/profile.png"
     alt="Professional portrait of Anthony Nze"
     class="profile-photo"
 >
@@ -236,6 +237,30 @@
             </div>
         </section>
 
+
+        <section class="section cv-section" id="cv">
+            <div class="section-heading">
+                <p class="section-label">04 / MY CV</p>
+                <h2>My experience and <span>learning journey.</span></h2>
+                <p class="section-intro">
+                    Explore my CV to learn more about my education, technical
+                    skills, DevOps training and practical projects.
+                </p>
+            </div>
+            <div class="hero-buttons cv-buttons">
+                <a class="button primary-button"
+                   href="/static/files/Anthony-Nze-CV.pdf"
+                   target="_blank" rel="noopener noreferrer">
+                    View My CV ↗
+                </a>
+                <a class="button secondary-button"
+                   href="/static/files/Anthony-Nze-CV.pdf"
+                   download="Anthony-Nze-CV.pdf">
+                    Download My CV ↓
+                </a>
+            </div>
+        </section>
+
         <section class="journey-section">
             <div class="journey-content">
                 <p class="section-label">04 / THE MINDSET</p>
@@ -269,6 +294,12 @@
                     <span>GitHub</span>
                     <strong>Explore my repositories ↗</strong>
                 </a>
+
+                <a href="https://www.linkedin.com/in/anthony-nze-210847446/"
+                   target="_blank" rel="noopener noreferrer">
+                    <span>LinkedIn</span>
+                    <strong>Connect with me ↗</strong>
+                </a>
             </div>
         </section>
     </main>
@@ -279,6 +310,6 @@
         <a href="#home">Back to top ↑</a>
     </footer>
 
-    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script src="/static/js/script.js"></script>
 </body>
 </html>

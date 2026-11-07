@@ -1,0 +1,107 @@
+name: Build and Deploy Portfolio
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: portfolio-production
+  cancel-in-progress: false
+
+jobs:
+  build-and-deploy:
+    name: Build, Deploy and Verify
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Validate portfolio files
+        run: |
+          set -e
+          test -f Dockerfile
+          test -f templates/index.html
+          test -f static/css/style.css
+          test -f static/js/script.js
+          test -f static/files/Anthony-Nze-CV.pdf
+          grep -q 'static/css/style.css' templates/index.html
+          grep -q 'Anthony-Nze-CV.pdf' templates/index.html
+          echo "Portfolio validation passed."
+
+      - name: Build Docker image
+        run: |
+          docker build --pull \
+            --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
+            -t anthony-portfolio:release .
+
+      - name: Save Docker image
+        run: docker save anthony-portfolio:release -o portfolio-image.tar
+
+      - name: Configure secure SSH
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
+          EC2_KNOWN_HOSTS: ${{ secrets.EC2_KNOWN_HOSTS }}
+        run: |
+          set -euo pipefail
+          mkdir -p "$HOME/.ssh"
+          chmod 700 "$HOME/.ssh"
+
+          printf '%s\n' "$EC2_SSH_PRIVATE_KEY" > "$HOME/.ssh/portfolio_deploy"
+          printf '%s\n' "$EC2_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+
+          chmod 600 "$HOME/.ssh/portfolio_deploy"
+          chmod 600 "$HOME/.ssh/known_hosts"
+
+          ssh-keygen -F "$EC2_HOST" -f "$HOME/.ssh/known_hosts"
+
+      - name: Upload image to EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          scp \
+            -i "$HOME/.ssh/portfolio_deploy" \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            portfolio-image.tar \
+            "${EC2_USER}@${EC2_HOST}:/opt/anthony-portfolio/incoming/portfolio-image.tar"
+
+      - name: Deploy on EC2
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+          EC2_USER: ${{ secrets.EC2_USER }}
+        run: |
+          ssh \
+            -i "$HOME/.ssh/portfolio_deploy" \
+            -o IdentitiesOnly=yes \
+            -o StrictHostKeyChecking=yes \
+            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
+            "${EC2_USER}@${EC2_HOST}" \
+            'sudo -n /usr/local/sbin/deploy-portfolio'
+
+      - name: Verify public website
+        env:
+          EC2_HOST: ${{ secrets.EC2_HOST }}
+        run: |
+          curl \
+            --fail \
+            --silent \
+            --show-error \
+            --retry 10 \
+            --retry-delay 3 \
+            "http://${EC2_HOST}:8081/"
+
+          echo "Website health check passed."
+
+      - name: Report deployed commit
+        run: |
+          echo "Successfully deployed commit: ${GITHUB_SHA}"
+          echo "Website: http://${{ secrets.EC2_HOST }}:8081"

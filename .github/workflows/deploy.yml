@@ -8,6 +8,7 @@ on:
 
 permissions:
   contents: read
+  id-token: write
 
 concurrency:
   group: portfolio-production
@@ -17,6 +18,12 @@ jobs:
   build-and-deploy:
     name: Build, Deploy and Verify
     runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    env:
+      AWS_REGION: eu-north-1
+      EC2_INSTANCE_ID: i-0e7496f9d4d0b353e
+      EC2_HOST: 13.62.50.97
 
     steps:
       - name: Checkout repository
@@ -24,84 +31,110 @@ jobs:
 
       - name: Validate portfolio files
         run: |
-          set -e
+          set -euo pipefail
+
           test -f Dockerfile
           test -f templates/index.html
           test -f static/css/style.css
           test -f static/js/script.js
           test -f static/files/Anthony-Nze-CV.pdf
+
           grep -q 'static/css/style.css' templates/index.html
           grep -q 'Anthony-Nze-CV.pdf' templates/index.html
+
           echo "Portfolio validation passed."
 
       - name: Build Docker image
         run: |
           docker build --pull \
             --label "org.opencontainers.image.revision=${GITHUB_SHA}" \
-            -t anthony-portfolio:release .
+            -t anthony-portfolio:ci .
 
-      - name: Save Docker image
-        run: docker save anthony-portfolio:release -o portfolio-image.tar
+      - name: Configure AWS credentials using OIDC
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          role-to-assume: arn:aws:iam::431251892590:role/GitHubActions-Portfolio-Deploy-Role
+          aws-region: eu-north-1
+          role-session-name: GitHubPortfolioDeployment
 
-      - name: Configure secure SSH
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_SSH_PRIVATE_KEY: ${{ secrets.EC2_SSH_PRIVATE_KEY }}
-          EC2_KNOWN_HOSTS: ${{ secrets.EC2_KNOWN_HOSTS }}
+      - name: Verify AWS identity
+        run: |
+          aws sts get-caller-identity
+
+      - name: Deploy using AWS Systems Manager
+        id: deploy
         run: |
           set -euo pipefail
-          mkdir -p "$HOME/.ssh"
-          chmod 700 "$HOME/.ssh"
 
-          printf '%s\n' "$EC2_SSH_PRIVATE_KEY" > "$HOME/.ssh/portfolio_deploy"
-          printf '%s\n' "$EC2_KNOWN_HOSTS" > "$HOME/.ssh/known_hosts"
+          echo "Sending deployment instruction to EC2..."
 
-          chmod 600 "$HOME/.ssh/portfolio_deploy"
-          chmod 600 "$HOME/.ssh/known_hosts"
+          COMMAND_ID=$(aws ssm send-command \
+            --instance-ids "$EC2_INSTANCE_ID" \
+            --document-name "AWS-RunShellScript" \
+            --comment "Deploy portfolio commit ${GITHUB_SHA}" \
+            --parameters "commands=/usr/local/sbin/deploy-portfolio-from-git ${GITHUB_SHA}" \
+            --query "Command.CommandId" \
+            --output text)
 
-          ssh-keygen -F "$EC2_HOST" -f "$HOME/.ssh/known_hosts"
+          echo "SSM Command ID: $COMMAND_ID"
 
-      - name: Upload image to EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-        run: |
-          scp \
-            -i "$HOME/.ssh/portfolio_deploy" \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
-            portfolio-image.tar \
-            "${EC2_USER}@${EC2_HOST}:/opt/anthony-portfolio/incoming/portfolio-image.tar"
+          STATUS="Pending"
 
-      - name: Deploy on EC2
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
-          EC2_USER: ${{ secrets.EC2_USER }}
-        run: |
-          ssh \
-            -i "$HOME/.ssh/portfolio_deploy" \
-            -o IdentitiesOnly=yes \
-            -o StrictHostKeyChecking=yes \
-            -o UserKnownHostsFile="$HOME/.ssh/known_hosts" \
-            "${EC2_USER}@${EC2_HOST}" \
-            'sudo -n /usr/local/sbin/deploy-portfolio'
+          for attempt in {1..120}; do
+            STATUS=$(aws ssm get-command-invocation \
+              --command-id "$COMMAND_ID" \
+              --instance-id "$EC2_INSTANCE_ID" \
+              --query "Status" \
+              --output text 2>/dev/null || true)
+
+            echo "Deployment status: $STATUS"
+
+            case "$STATUS" in
+              Success)
+                break
+                ;;
+              Failed|TimedOut|Cancelled)
+                echo "Deployment failed."
+                aws ssm get-command-invocation \
+                  --command-id "$COMMAND_ID" \
+                  --instance-id "$EC2_INSTANCE_ID" \
+                  --query "{Output:StandardOutputContent,Error:StandardErrorContent}" \
+                  --output json || true
+                exit 1
+                ;;
+            esac
+
+            sleep 5
+          done
+
+          if [[ "$STATUS" != "Success" ]]; then
+            echo "Deployment did not complete successfully."
+            exit 1
+          fi
+
+          echo "===== EC2 DEPLOYMENT OUTPUT ====="
+
+          aws ssm get-command-invocation \
+            --command-id "$COMMAND_ID" \
+            --instance-id "$EC2_INSTANCE_ID" \
+            --query "StandardOutputContent" \
+            --output text
 
       - name: Verify public website
-        env:
-          EC2_HOST: ${{ secrets.EC2_HOST }}
         run: |
           curl \
             --fail \
             --silent \
             --show-error \
             --retry 10 \
-            --retry-delay 3 \
+            --retry-delay 5 \
+            --retry-connrefused \
             "http://${EC2_HOST}:8081/"
 
-          echo "Website health check passed."
+          echo "Public website health check passed."
 
       - name: Report deployed commit
         run: |
-          echo "Successfully deployed commit: ${GITHUB_SHA}"
-          echo "Website: http://${{ secrets.EC2_HOST }}:8081"
+          echo "Deployment successful."
+          echo "Commit deployed: ${GITHUB_SHA}"
+          echo "Website: http://${EC2_HOST}:8081"

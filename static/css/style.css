@@ -939,3 +939,211 @@ footer {
     justify-content: center;
     margin-top: 30px;
 }
+
+/* =========================================
+   ANTHONY NZE PORTFOLIO
+   DUSK BLUE + MIDNIGHT NAVY THEME
+   ========================================= */
+
+:root {
+    --navy: #0D1A33;
+    --navy-light: #172847;
+    --blue: #8FB4E3;
+    --cyan: #8FB4E3;
+
+    --text: #F4F7FC;
+    --muted: #B8C7DC;
+    --light: #13213B;
+    --white: #152544;
+    --border: #293D5D;
+}
+
+/* Main background */
+body {
+    background: var(--navy);
+    color: var(--text);
+}
+
+/* Navigation */
+.navbar {
+    background: var(--navy);
+    border-bottom-color: var(--border);
+}
+
+.navbar nav a {
+    color: #D5E0EF;
+}
+
+.navbar nav a:hover {
+    color: var(--blue);
+}
+
+.nav-button {
+    color: var(--blue);
+    border-color: var(--blue);
+}
+
+/* Hero section */
+.hero {
+    background:
+        radial-gradient(circle at 85% 25%, #263F65 0, transparent 35%),
+        linear-gradient(135deg, #0D1A33, #142747);
+}
+
+.hero h1,
+.section-heading h2,
+.about-card h3,
+.skill-card h3,
+.project-card h3,
+.contact-links strong {
+    color: #F4F7FC;
+}
+
+.hero-description,
+.section-intro,
+.about-content > div:first-child p {
+    color: var(--muted);
+}
+
+/* Buttons */
+.primary-button {
+    background: var(--blue);
+    color: #0D1A33;
+}
+
+.primary-button:hover {
+    background: #A9C8EC;
+}
+
+.secondary-button {
+    color: var(--blue);
+    border-color: var(--blue);
+}
+
+.secondary-button:hover {
+    background: #1B3152;
+    color: #FFFFFF;
+}
+
+/* Terminal */
+.terminal-card {
+    background: #091426;
+    border: 1px solid var(--border);
+}
+
+.terminal-header {
+    background: #142747;
+}
+
+.terminal-blue,
+.terminal-body li::before,
+.cursor {
+    color: var(--blue);
+}
+
+/* Floating label */
+.floating-label {
+    background: #172847;
+    color: #F4F7FC;
+    border: 1px solid var(--border);
+}
+
+/* Statistics */
+.quick-stats {
+    background: #091426;
+}
+
+.quick-stats h3 {
+    color: var(--blue);
+}
+
+/* About section */
+.about-card {
+    background: #172847;
+    border-color: var(--border);
+}
+
+.about-card p:not(.card-label) {
+    color: var(--muted);
+}
+
+/* Skills */
+.skills-section,
+.contact-section {
+    background: #101F3A;
+}
+
+.skill-card {
+    background: #172847;
+    border-color: var(--border);
+}
+
+.skill-card p {
+    color: var(--muted);
+}
+
+/* Projects */
+.project-card {
+    background: #152544;
+    border-color: var(--border);
+}
+
+.project-card > p {
+    color: var(--muted);
+}
+
+.project-tag {
+    background: #263F65;
+    color: var(--blue);
+}
+
+.project-tech span {
+    background: #0D1A33;
+    color: #D5E0EF;
+}
+
+.skill-card:hover,
+.project-card:hover {
+    border-color: var(--blue);
+    box-shadow: 0 15px 35px #00000030;
+}
+
+/* Journey section */
+.journey-section {
+    background: #091426;
+}
+
+.journey-content p:not(.section-label) {
+    color: #B8C7DC;
+}
+
+/* Contact */
+.contact-links a {
+    background: #172847;
+    border-color: var(--border);
+}
+
+.contact-links a:hover {
+    border-color: var(--blue);
+}
+
+.contact-links span {
+    color: var(--blue);
+}
+
+/* Footer */
+footer {
+    background: #091426;
+}
+
+footer p,
+footer > a:last-child {
+    color: #B8C7DC;
+}
+
+/* Selection highlight */
+::selection {
+    background: #8FB4E3;
+    color: #0D1A33;
+}
+
